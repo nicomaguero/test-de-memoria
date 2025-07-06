@@ -1,0 +1,13 @@
+# Archivos específicos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de configuración de editores
+.vscode/
+.idea/
+
+# Dependencias de proyectos (si en el futuro usas Node.js)
+node_modules/
+
+# Archivos de entorno con variables sensibles
+.env
