@@ -120,3 +120,78 @@ body {
     box-shadow: var(--box-shadow);
     text-align: center;
 }
+
+/* --- Estilos de la Página de Colorear --- */
+.coloring-container {
+    text-align: center;
+}
+
+.toolbar {
+    background-color: var(--card-background);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.tool-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tool-btn {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.tool-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+#coloringCanvas {
+    background-color: white;
+    border: 2px solid #ccc;
+    box-shadow: var(--box-shadow);
+    cursor: crosshair; /* Cambia el cursor para que parezca una herramienta de dibujo */
+}
+
+/* --- Estilos para la superposición de Canvas --- */
+.canvas-container {
+    position: relative; /* Contenedor para posicionar los canvas */
+    width: 800px; /* Ancho fijo para el contenedor */
+    height: 600px; /* Alto fijo para el contenedor */
+    margin: auto; /* Centrar el contenedor */
+}
+
+/* Estilos para ambos canvas */
+.canvas-container canvas {
+    position: absolute; /* Posiciona un canvas sobre el otro */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#backgroundCanvas {
+    background-color: white; /* El fondo blanco ahora va en el canvas de abajo */
+    border: 2px solid #ccc;
+    box-shadow: var(--box-shadow);
+    z-index: 1; /* Se asegura que esté debajo */
+}
+
+#drawingCanvas {
+    cursor: crosshair; /* El cursor de dibujo va en el canvas de arriba */
+    z-index: 2; /* Se asegura que esté encima */
+}
