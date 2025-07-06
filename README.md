@@ -4,7 +4,7 @@
 
 Una aplicación web estática pero interactiva, diseñada como un portfolio para demostrar habilidades fundamentales en desarrollo front-end, buenas prácticas de código y un flujo de trabajo profesional de Git y despliegue continuo.
 
-### **✨ [Ver la Demo en Vivo]([https://dinamym.com.ar/]) ✨**
+### ✨ [Ver la Demo en Vivo](https://dinamym.com.ar/) ✨
 
 ---
 
@@ -46,17 +46,19 @@ Más allá de la funcionalidad, este proyecto fue concebido para demostrar prác
 
 ### 🔧 Cómo ejecutar este proyecto localmente
 
-Si deseas explorar el código o hacer tus propias modificaciones:
+Debido a las políticas de seguridad de los navegadores (CORS), este proyecto debe ejecutarse a través de un servidor local para que todas las funcionalidades, como cargar imágenes en el canvas, operen correctamente.
 
 1.  Clona el repositorio:
     ```bash
-    git clone [https://github.com/](https://github.com/)[TU_USUARIO]/[NOMBRE_DEL_REPOSITORIO].git
+    git clone [https://github.com/nicomaguero/test-de-memoria.git](https://github.com/nicomaguero/test-de-memoria.git)
     ```
 2.  Navega a la carpeta del proyecto:
     ```bash
-    cd [NOMBRE_DEL_REPOSITORIO]
+    cd test-de-memoria
     ```
-3.  Abre el archivo `index.html` en tu navegador de preferencia. ¡Eso es todo!
+3.  **Ejecuta el proyecto con un servidor local.** La forma más sencilla es usar la extensión **"Live Server"** de Visual Studio Code:
+    * Haz clic derecho sobre el archivo `index.html`.
+    * Selecciona "Open with Live Server".
 
 ---
 
