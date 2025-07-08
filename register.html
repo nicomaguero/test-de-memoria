@@ -1,37 +1,45 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Crear Cuenta - Proyecto Web</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
+    <header class="main-header">
+        <a href="index.html" class="logo">Mi Proyecto</a>
+        <nav class="main-nav" id="main-nav">
+            <a href="index.html">Iniciar Sesión</a>
+        </nav>
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Abrir menú">
+            <span class="line"></span>
+            <span class="line"></span>
+            <span class="line"></span>
+        </button>
+    </header>
 
-    <div class="container">
+    <main class="container">
         <div class="form-card">
             <h1>Crea tu Cuenta</h1>
             <p>Completa tus datos para registrarte.</p>
-
             <form id="registerForm">
                 <div class="input-group">
                     <label for="firstName">Nombre</label>
-                    <input type="text" id="firstName" name="firstName" required>
+                    <input type="text" id="firstName" name="firstName" required />
                 </div>
                 <div class="input-group">
                     <label for="lastName">Apellido</label>
-                    <input type="text" id="lastName" name="lastName" required>
+                    <input type="text" id="lastName" name="lastName" required />
                 </div>
                 <div class="input-group">
                     <label for="username">Elige un Nombre de Usuario</label>
-                    <input type="text" id="username" name="username" required>
+                    <input type="text" id="username" name="username" required />
                 </div>
-
                 <a href="main.html" class="btn btn-primary">Crear Cuenta</a>
-                <p class="login-link">¿Ya tienes una cuenta? <a href="index.html">Ingresa aquí</a></p>
             </form>
         </div>
-    </div>
-
+    </main>
+    <script src="assets/js/nav.js"></script>
 </body>
 </html>

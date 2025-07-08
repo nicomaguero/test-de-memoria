@@ -1,12 +1,11 @@
-// Espera a que todo el contenido de la página esté cargado
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- SELECCIÓN DE ELEMENTOS DEL DOM ---
     const backgroundCanvas = document.getElementById('backgroundCanvas');
     const backgroundCtx = backgroundCanvas.getContext('2d');
     const drawingCanvas = document.getElementById('drawingCanvas');
-    const drawingCtx = drawingCanvas.getContext('2d');
+    const drawingCtx = drawingCanvas.getContext('2d', { willReadFrequently: true }); // Optimización para lectura
 
+    // Selección de herramientas
     const colorPicker = document.getElementById('colorPicker');
     const lineWidthInput = document.getElementById('lineWidth');
     const pencilBtn = document.getElementById('pencilBtn');
@@ -15,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveBtn = document.getElementById('saveBtn');
     const clearBtn = document.getElementById('clearBtn');
 
-    // --- CONFIGURACIÓN INICIAL ---
+    // Configuración inicial
     const coloringImages = [
         'assets/images/coloring/dibujo1.png',
         'assets/images/coloring/dibujo2.png',
@@ -28,47 +27,83 @@ document.addEventListener('DOMContentLoaded', () => {
     let isErasing = false;
 
     [backgroundCanvas, drawingCanvas].forEach(canvas => {
-        canvas.width = 800;
-        canvas.height = 600;
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
     });
     
     drawingCtx.lineWidth = lineWidthInput.value;
     drawingCtx.lineCap = 'round';
+    drawingCtx.lineJoin = 'round';
+
 
     // --- FUNCIONES ---
 
     function loadImage(src) {
-
-	currentImage.crossOrigin = "Anonymous"; // Esto es clave para la seguridad CORS
-
+        currentImage.crossOrigin = "Anonymous";
         currentImage.src = src;
         currentImage.onload = () => {
             backgroundCtx.clearRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
             drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
 
-            const scale = Math.min(backgroundCanvas.width / currentImage.width, backgroundCanvas.height / currentImage.height);
-            const x = (backgroundCanvas.width / 2) - (currentImage.width / 2) * scale;
-            const y = (backgroundCanvas.height / 2) - (currentImage.height / 2) * scale;
-            backgroundCtx.drawImage(currentImage, x, y, currentImage.width * scale, currentImage.height * scale);
+            const canvasAspectRatio = backgroundCanvas.width / backgroundCanvas.height;
+            const imageAspectRatio = currentImage.width / currentImage.height;
+            let drawWidth, drawHeight, x, y;
+
+            if (imageAspectRatio > canvasAspectRatio) {
+                drawWidth = backgroundCanvas.width;
+                drawHeight = drawWidth / imageAspectRatio;
+            } else {
+                drawHeight = backgroundCanvas.height;
+                drawWidth = drawHeight * imageAspectRatio;
+            }
+
+            x = (backgroundCanvas.width - drawWidth) / 2;
+            y = (backgroundCanvas.height - drawHeight) / 2;
+
+            backgroundCtx.drawImage(currentImage, x, y, drawWidth, drawHeight);
         };
     }
 
-    function startDrawing(e) {
+    function getCoordinates(event) {
+        const rect = drawingCanvas.getBoundingClientRect();
+        let x, y;
+
+        if (event.touches) {
+            // Evento táctil
+            if (event.touches.length > 0) {
+              x = event.touches[0].clientX - rect.left;
+              y = event.touches[0].clientY - rect.top;
+            }
+        } else {
+            // Evento de mouse
+            x = event.clientX - rect.left;
+            y = event.clientY - rect.top;
+        }
+        return { x, y };
+    }
+
+    function startDrawing(event) {
         isDrawing = true;
-        draw(e);
+        draw(event);
     }
 
     function stopDrawing() {
-        isDrawing = false;
-        drawingCtx.beginPath();
+        if (isDrawing) {
+          isDrawing = false;
+          drawingCtx.beginPath();
+        }
     }
 
-    function draw(e) {
+    function draw(event) {
         if (!isDrawing) return;
+        event.preventDefault(); // Previene el scroll mientras se dibuja
 
-        const rect = drawingCanvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        const { x, y } = getCoordinates(event);
+        if (x === undefined || y === undefined) return;
 
         drawingCtx.strokeStyle = colorPicker.value;
         drawingCtx.lineWidth = lineWidthInput.value;
@@ -92,69 +127,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- EVENT LISTENERS ---
 
+    // Eventos de Mouse
     drawingCanvas.addEventListener('mousedown', startDrawing);
-    drawingCanvas.addEventListener('mouseup', stopDrawing);
-    drawingCanvas.addEventListener('mouseout', stopDrawing);
     drawingCanvas.addEventListener('mousemove', draw);
-    
-    colorPicker.addEventListener('change', () => {
-        isErasing = false;
-        pencilBtn.classList.add('active');
-        eraserBtn.classList.remove('active');
-    });
-    
-    lineWidthInput.addEventListener('input', (e) => {
-        drawingCtx.lineWidth = e.target.value;
-    });
+    drawingCanvas.addEventListener('mouseup', stopDrawing);
+    drawingCanvas.addEventListener('mouseout', stopDrawing); // Si el mouse sale del canvas
 
-    pencilBtn.addEventListener('click', () => {
-        isErasing = false;
-        pencilBtn.classList.add('active');
-        eraserBtn.classList.remove('active');
-    });
+    // Eventos Táctiles
+    drawingCanvas.addEventListener('touchstart', startDrawing);
+    drawingCanvas.addEventListener('touchmove', draw);
+    drawingCanvas.addEventListener('touchend', stopDrawing);
+    drawingCanvas.addEventListener('touchcancel', stopDrawing); // Si el sistema cancela el toque
 
-    eraserBtn.addEventListener('click', () => {
-        isErasing = true;
-        eraserBtn.classList.add('active');
-        pencilBtn.classList.remove('active');
-    });
-
+    // Eventos de Herramientas
+    colorPicker.addEventListener('change', () => { isErasing = false; });
+    lineWidthInput.addEventListener('input', (e) => { drawingCtx.lineWidth = e.target.value; });
+    pencilBtn.addEventListener('click', () => { isErasing = false; });
+    eraserBtn.addEventListener('click', () => { isErasing = true; });
     randomBtn.addEventListener('click', loadRandomImage);
-    
-    clearBtn.addEventListener('click', () => {
-        drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
-    });
-
-    // --- LÓGICA DE GUARDADO CORREGIDA ---
+    clearBtn.addEventListener('click', () => { drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height); });
     saveBtn.addEventListener('click', () => {
-        // 1. Crear un lienzo temporal en la memoria
         const tempCanvas = document.createElement('canvas');
-        const tempCtx = tempCanvas.getContext('2d');
-
-        // 2. Establecer las dimensiones del lienzo temporal
         tempCanvas.width = backgroundCanvas.width;
         tempCanvas.height = backgroundCanvas.height;
-
-        // 3. Dibujar el canvas de fondo (la imagen original) en el lienzo temporal
+        const tempCtx = tempCanvas.getContext('2d');
         tempCtx.drawImage(backgroundCanvas, 0, 0);
-
-        // 4. Dibujar el canvas de dibujo (lo que pintó el usuario) encima
         tempCtx.drawImage(drawingCanvas, 0, 0);
-
-        // 5. Obtener la URL de datos del lienzo temporal combinado
-        const dataURL = tempCanvas.toDataURL('image/png');
-
-        // 6. Crear un enlace temporal para iniciar la descarga
         const link = document.createElement('a');
-        link.href = dataURL;
         link.download = 'mi-dibujo-coloreado.png';
-
-        // 7. Simular un clic en el enlace para descargar y luego eliminarlo
-        document.body.appendChild(link);
+        link.href = tempCanvas.toDataURL('image/png');
         link.click();
-        document.body.removeChild(link);
     });
     
-    // --- INICIALIZACIÓN ---
+    // Inicialización
     loadRandomImage();
 });

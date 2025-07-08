@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Página Principal - Juegos</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
-
     <header class="main-header">
-        <h1>Juegos de Inteligencia</h1>
-        <nav>
+        <a href="index.html" class="logo">Mi Proyecto</a>
+        <nav class="main-nav" id="main-nav">
             <a href="index.html">Cerrar Sesión</a>
         </nav>
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Abrir menú">
+            <span class="line"></span>
+            <span class="line"></span>
+            <span class="line"></span>
+        </button>
     </header>
 
     <main class="container">
-        <h2>Elige un juego</h2>
+        <h2 class="page-title">Juegos de Inteligencia</h2>
+        <p class="page-subtitle">Elige una actividad para empezar.</p>
+
         <div class="game-grid">
             <div class="game-card">
                 <h3>Recordar Palabras</h3>
@@ -33,14 +39,14 @@
                 <p>Encuentra las palabras ocultas.</p>
                 <button class="btn btn-secondary" disabled>Próximamente</button>
             </div>
-	    <div class="game-card">
-    		<h3>Lienzo para Colorear</h3>
-   		<p>Elige un dibujo y píntalo como más te guste.</p>
-    		<a href="colorear.html" class="btn btn-primary">¡A pintar!</a>
-	    </div>
+            <div class="game-card">
+                <h3>Lienzo para Colorear</h3>
+                <p>Elige un dibujo y píntalo como más te guste.</p>
+                <a href="colorear.html" class="btn btn-primary">¡A pintar!</a>
+            </div>
         </div>
     </main>
-
     <script src="assets/js/app.js"></script>
+    <script src="assets/js/nav.js"></script>
 </body>
 </html>
